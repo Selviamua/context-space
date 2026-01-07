@@ -8,7 +8,7 @@ import (
 	"github.com/context-space/context-space/backend/internal/provideradapter/domain"
 	"github.com/context-space/context-space/backend/internal/provideradapter/infrastructure/base"
 	"github.com/context-space/context-space/backend/internal/provideradapter/infrastructure/registry"
-	providercore "github.com/context-space/context-space/backend/internal/providercore/domain"
+	"github.com/context-space/context-space/backend/internal/shared/types"
 )
 
 // MCPTemplateRegistry holds all registered MCP templates
@@ -33,8 +33,6 @@ func (t *MCPTemplate) CreateAdapter(provider *domain.ProviderAdapterConfig) (dom
 		Name:        provider.Name,
 		Description: provider.Description,
 		AuthType:    provider.AuthType,
-		Permissions: provider.Permissions,
-		Operations:  provider.Operations,
 		Status:      provider.Status,
 	}
 
@@ -150,7 +148,7 @@ func (t *MCPTemplate) ValidateConfig(provider *domain.ProviderAdapterConfig) err
 
 	// Validate auth type is supported
 	switch provider.AuthType {
-	case providercore.AuthTypeNone, providercore.AuthTypeAPIKey:
+	case types.AuthTypeNone, types.AuthTypeAPIKey:
 		// Supported auth types
 	default:
 		return fmt.Errorf("unsupported auth type: %s", provider.AuthType)
@@ -248,6 +246,301 @@ var DefaultMCPTemplates = map[string]*MCPTemplate{
 			Envs: map[string]string{
 				"TZ": "UTC", // Fix timezone detection issue
 			},
+		},
+	},
+
+	"context7_mcp": {
+		Identifier: "context7_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@upstash/context7-mcp@1.0.14"},
+		},
+	},
+	"howtocook_mcp": {
+		Identifier: "howtocook_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "howtocook-mcp@0.1.1"},
+		},
+	},
+	"airbnb_mcp": {
+		Identifier: "airbnb_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@openbnb/mcp-server-airbnb@0.1.3", "--ignore-robots-txt"},
+		},
+	},
+	"youtube_mcp": {
+		Identifier: "youtube_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "youtube-data-mcp-server@1.0.16"},
+			Envs: map[string]string{
+				"YOUTUBE_TRANSCRIPT_LANG": "en",
+			},
+			CredentialMappings: map[string]string{
+				"apikey": "env:YOUTUBE_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_youtube_api_key",
+			},
+		},
+	},
+	"yfinance_mcp": {
+		Identifier: "yfinance_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"mcp-yahoo-finance@0.1.3"},
+		},
+	},
+	"googlemaps_mcp": {
+		Identifier: "googlemaps_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@modelcontextprotocol/server-google-maps@0.6.2"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:GOOGLE_MAPS_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_google_maps_api_key",
+			},
+		},
+	},
+	"minimax_mcp": {
+		Identifier: "minimax_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"minimax-mcp@0.0.17", "-y"},
+			Envs: map[string]string{
+				"MINIMAX_API_HOST": "https://api.minimaxi.chat",
+			},
+			CredentialMappings: map[string]string{
+				"apikey": "env:MINIMAX_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_minimax_api_key",
+			},
+		},
+	},
+	"aws_pricing_mcp": {
+		Identifier: "aws_pricing_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"awslabs.aws-pricing-mcp-server@1.0.6"},
+			Envs: map[string]string{
+				"AWS_REGION":        "us-east-1",
+				"FASTMCP_LOG_LEVEL": "ERROR",
+			},
+			CredentialMappings: map[string]string{
+				"apikey": "env:AWS_ACCESS_KEY_ID",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_aws_access_key_id",
+			},
+		},
+	},
+	"asana_mcp": {
+		Identifier: "asana_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@roychri/mcp-server-asana@1.7.0"},
+			CredentialMappings: map[string]string{
+				"access_token": "env:ASANA_ACCESS_TOKEN",
+			},
+			DummyCredentials: map[string]string{
+				"access_token": "dummy_asana_access_token",
+			},
+		},
+	},
+	"cloudflare_bindings_mcp": {
+		Identifier: "cloudflare_bindings_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"mcp-remote@0.1.18", "https://bindings.mcp.cloudflare.com/sse"},
+		},
+	},
+	"firecrawl_mcp": {
+		Identifier: "firecrawl_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "firecrawl-mcp@1.12.0"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:FIRECRAWL_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_firecrawl_api_key",
+			},
+		},
+	},
+	"todoist_mcp": {
+		Identifier: "todoist_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@abhiz123/todoist-mcp-server@0.1.0"},
+			CredentialMappings: map[string]string{
+				"api_token": "env:TODOIST_API_TOKEN",
+			},
+			DummyCredentials: map[string]string{
+				"api_token": "dummy_todoist_api_token",
+			},
+		},
+	},
+	"postgre_sql_mcp": {
+		Identifier: "postgre_sql_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@modelcontextprotocol/server-postgres@0.6.2", "postgresql://localhost/mydb"},
+		},
+	},
+	"duckduckgo_mcp": {
+		Identifier: "duckduckgo_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"duckduckgo-mcp-server@0.1.1"},
+		},
+	},
+	"akshare_mcp": {
+		Identifier: "akshare_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"akshare-one-mcp@0.2.3"},
+		},
+	},
+	"arxiv_mcp": {
+		Identifier: "arxiv_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uv",
+			Args:    []string{"tool", "run", "arxiv-paper-mcp@0.1.2"},
+		},
+	},
+	"exa_mcp": {
+		Identifier: "exa_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "exa-mcp-server@2.0.3"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:EXA_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_exa_api_key",
+			},
+		},
+	},
+	"everart_mcp": {
+		Identifier: "everart_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@modelcontextprotocol/server-everart@0.6.2"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:EVERART_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_everart_api_key",
+			},
+		},
+	},
+	"huggingface_mcp": {
+		Identifier: "huggingface_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"huggingface-mcp-server@0.1.0"},
+		},
+	},
+	"wikipedia_mcp": {
+		Identifier: "wikipedia_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"wikipedia-mcp@1.5.5"},
+		},
+	},
+	"calculator_mcp": {
+		Identifier: "calculator_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"mcp-server-calculator@0.1.1"},
+		},
+	},
+	"jina_mcp": {
+		Identifier: "jina_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"jina-mcp-tools@1.1.1"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:JINA_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_jina_api_key",
+			},
+		},
+	},
+	"baidu_map_mcp": {
+		Identifier: "baidu_map_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@baidumap/mcp-server-baidu-map@1.0.5"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:BAIDU_MAP_API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_baidu_map_api_key",
+			},
+		},
+	},
+	"google_scholar_mcp": {
+		Identifier: "google_scholar_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "uvx",
+			Args:    []string{"google-scholar-mcp-server@0.1.3"},
+		},
+	},
+	"search1api_mcp": {
+		Identifier: "search1api_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "search1api-mcp@0.1.8"},
+			CredentialMappings: map[string]string{
+				"apikey": "env:SEARCH1API_KEY",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_search1api_api_key",
+			},
+		},
+	},
+	"gitlab_mcp": {
+		Identifier: "gitlab_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@modelcontextprotocol/server-gitlab@2025.4.25"},
+			Envs: map[string]string{
+				"GITLAB_API_URL": "https://gitlab.com/api/v4",
+			},
+			CredentialMappings: map[string]string{
+				"apikey": "env:GITLAB_PERSONAL_ACCESS_TOKEN",
+			},
+			DummyCredentials: map[string]string{
+				"apikey": "dummy_gitlab_personal_access_token",
+			},
+		},
+	},
+	"antv_mcp": {
+		Identifier: "antv_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "@antv/mcp-server-chart@0.8.0"},
+		},
+	},
+	"tavily_mcp": {
+		Identifier: "tavily_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "tavily-mcp@0.2.9"},
+		},
+	},
+	"web3_research_mcp": {
+		Identifier: "web3_research_mcp",
+		DefaultConfig: MCPAdapterConfig{
+			Command: "npx",
+			Args:    []string{"-y", "web3-research-mcp@1.0.1"},
 		},
 	},
 }
